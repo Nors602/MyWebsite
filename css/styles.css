@@ -128,9 +128,17 @@ body[data-theme="dark"] .form-control, body[data-theme="dark"] .form-select { co
 body[data-theme="dark"] .input-group-text { border-color: #3c4965; background: #1a243b; }
 body[data-theme="dark"] .team-strip { background: #1a243b; }
 body[data-theme="dark"] .related-link, body[data-theme="dark"] .contact-item { border-color: #35425f; }
+body[data-theme="dark"] .modal-content { background: var(--surface); }
+body[data-theme="dark"] .modal-header { border-bottom-color: #35425f; }
 .toast-container { z-index: 1080; }
 .toast { min-width: 19rem; font-family: 'Cairo', sans-serif; font-size: .8rem; box-shadow: 0 .75rem 2rem rgba(23,35,60,.2); }
 .toast-body { padding: .8rem 1rem; }
+.modal-content { color: var(--ink); border: 0; border-radius: 1rem; box-shadow: 0 1rem 3rem rgba(23,35,60,.2); }
+.modal-header { border-bottom-color: #e8ebf2; }
+.booking-summary { display: flex; flex-direction: column; gap: .25rem; padding: 1rem; border-radius: .8rem; background: var(--soft); }
+.booking-summary strong { font-size: .95rem; }
+.booking-summary span, .booking-summary small { color: var(--muted); font-size: .78rem; line-height: 1.8; }
+.booking-summary small { color: var(--primary); }
 .filter-panel .btn:disabled, .form-card .btn:disabled, .modal .btn:disabled { opacity: .8; cursor: wait; }
 .event-image img { display: block; aspect-ratio: 600 / 380; }
 .detail-cover { aspect-ratio: 1000 / 560; }

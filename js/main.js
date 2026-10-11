@@ -171,7 +171,13 @@ function initEventDetails() {
     document.getElementById('relatedEvents').innerHTML = Object.entries(eventCatalog).filter(([eventId]) => eventId !== id).map(([eventId, item]) => `<a class="related-link" href="event.html?id=${eventId}">${item.title}<small>${item.date} · ${item.category}</small></a>`).join('');
 
     const modalElement = document.getElementById('bookingModal');
+    setText('#bookingEventTitle', event.title);
+    setText('#bookingEventMeta', `${event.date} · ${event.location}`);
     modalElement?.addEventListener('shown.bs.modal', () => document.getElementById('bookingName')?.focus());
+    modalElement?.addEventListener('hidden.bs.modal', () => {
+        const bookingForm = document.getElementById('bookingForm');
+        bookingForm?.classList.remove('was-validated');
+    });
     const form = document.getElementById('bookingForm');
     form?.addEventListener('submit', (eventSubmit) => {
         eventSubmit.preventDefault();
