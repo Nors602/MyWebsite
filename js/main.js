@@ -814,9 +814,10 @@ function initEventDetails() {
   const relatedEvents = Object.entries(eventCatalog).filter(
     ([eventId, item]) => eventId !== id && item.category === event.category,
   );
-  const renderEventLinks = (items) =>
+  const renderEventLinks = (items, limit = 3) =>
     items.length
       ? items
+          .slice(0, limit)
           .map(
             ([eventId, item]) =>
               `<a class="related-link" href="event.html?id=${eventId}">${item.title}<small>${item.date} · ${item.time}</small></a>`,
@@ -828,6 +829,29 @@ function initEventDetails() {
     renderEventLinks(relatedEvents);
   document.getElementById("otherEvents").innerHTML =
     renderEventLinks(otherEvents);
+  const setupMoreButton = (buttonId, containerId, items, label) => {
+    const button = document.getElementById(buttonId);
+    const container = document.getElementById(containerId);
+    if (!button || !container || items.length <= 3) return;
+    button.classList.remove("d-none");
+    button.addEventListener("click", () => {
+      container.innerHTML = renderEventLinks(items, items.length);
+      button.classList.add("d-none");
+    });
+    button.setAttribute("aria-label", label);
+  };
+  setupMoreButton(
+    "showMoreRelated",
+    "relatedEvents",
+    relatedEvents,
+    "عرض جميع الفعاليات المرتبطة",
+  );
+  setupMoreButton(
+    "showMoreOther",
+    "otherEvents",
+    otherEvents,
+    "عرض جميع الفعاليات الأخرى",
+  );
 
   const modalElement = document.getElementById("bookingModal");
   setText("#bookingEventTitle", event.title);
