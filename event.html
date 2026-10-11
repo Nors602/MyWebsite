@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="تفاصيل الفعالية في دليل فعاليات الجامعة الافتراضية السورية."
+      content="تعرف إلى موعد الفعالية ومكانها ومحاورها، واحفظها أو أضفها إلى تقويمك من دليل فعاليات SVU."
     />
     <title>تفاصيل الفعالية | دليل فعاليات SVU</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -75,7 +75,26 @@
     </header>
 
     <main class="container section-spacing">
-      <div class="row g-5">
+      <section id="eventLanding" class="event-landing d-none" aria-labelledby="eventLandingTitle">
+        <div class="text-center mb-5">
+          <span class="section-kicker">اكتشف فعالياتك القادمة</span>
+          <h1 id="eventLandingTitle" class="display-5 fw-bold mb-3">
+            اختر الفعالية التي تهمك
+          </h1>
+          <p class="detail-copy mx-auto">
+            استكشف تفاصيل الفعاليات المميزة والقادمة، واختر تجربتك القادمة مع
+            مجتمع الجامعة الافتراضية السورية.
+          </p>
+        </div>
+        <div class="row g-4" id="landingEvents"></div>
+        <div class="text-center mt-5">
+          <a class="btn btn-primary" href="events.html">
+            <i class="fa-solid fa-calendar-days ms-2" aria-hidden="true"></i>
+            عرض جميع الفعاليات
+          </a>
+        </div>
+      </section>
+      <div id="eventDetailsLayout" class="row g-5">
         <div class="col-lg-8">
           <span id="eventKicker" class="section-kicker"
             >فعالية مميزة · تكنولوجيا</span
@@ -85,8 +104,8 @@
           </h1>
           <p id="eventMeta" class="event-meta mb-4">
             <i class="fa-regular fa-calendar"> </i> 25 نوفمبر 2026
-            <i class="fa-solid fa-location-dot"> </i> قاعة البث الافتراضية عبر
-            الإنترنت
+            <i class="fa-regular fa-clock"> </i> 6:00 مساءً – 8:30 مساءً
+            <i class="fa-solid fa-location-dot"> </i> أونلاين
           </p>
           <img
             id="eventImage"
@@ -104,21 +123,21 @@
           <h2 class="h5 fw-bold mt-5 mb-3">محاور أو أبرز نقاط الفعالية</h2>
           <div id="eventFeatures" class="row g-3 mb-4">
             <div class="col-sm-4">
-              <div class="feature-box">
+              <div class="feature-box interactive-feature" tabindex="0" role="button" aria-expanded="false">
                 <i class="fa-solid fa-layer-group"></i
                 ><strong id="feat1Title">3-Tier Architecture</strong
                 ><span id="feat1Desc">تصميم قابل للتوسع</span>
               </div>
             </div>
             <div class="col-sm-4">
-              <div class="feature-box">
+              <div class="feature-box interactive-feature" tabindex="0" role="button" aria-expanded="false">
                 <i class="fa-solid fa-database"></i
                 ><strong id="feat2Title">SQL Server</strong
                 ><span id="feat2Desc">إدارة البيانات باحتراف</span>
               </div>
             </div>
             <div class="col-sm-4">
-              <div class="feature-box">
+              <div class="feature-box interactive-feature" tabindex="0" role="button" aria-expanded="false">
                 <i class="fa-solid fa-code"></i
                 ><strong id="feat3Title">C# و .NET</strong
                 ><span id="feat3Desc">تطبيقات عملية حديثة</span>
@@ -126,20 +145,46 @@
             </div>
           </div>
 
+          <section id="eventMapSection" class="event-map-section d-none mt-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div>
+                <h2 class="h4 fw-bold mb-1">موقع الفعالية</h2>
+                <p class="text-muted small mb-0">
+                  الجامعة الافتراضية السورية · دمشق ·
+                  <span>G76F+C28</span>
+                </p>
+              </div>
+              <a
+                class="btn btn-sm btn-outline-primary"
+                href="https://www.google.com/maps/search/?api=1&query=G76F%2BC28%2C%20Damascus%2C%20Syria"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fa-solid fa-diamond-turn-right ms-1"></i>فتح في الخرائط
+              </a>
+            </div>
+            <iframe
+              id="eventMap"
+              title="خريطة موقع الجامعة الافتراضية السورية في دمشق"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </section>
+
           <div class="d-flex flex-wrap gap-2">
             <button
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#bookingModal"
             >
-              <i class="fa-solid fa-ticket ms-2"></i>حجز مقعد وهمي
+              <i class="fa-solid fa-ticket ms-2"></i>حجز مقعد
             </button>
             <button
               class="btn btn-outline-secondary"
               type="button"
               data-calendar
             >
-              <i class="fa-solid fa-calendar-plus ms-2"></i>أضف للتقويم
+              <i class="fa-brands fa-google ms-2"></i>أضف إلى Google Calendar
             </button>
             <button class="btn btn-outline-dark" type="button" data-share>
               <i class="fa-solid fa-share-nodes ms-2"></i>مشاركة
@@ -162,9 +207,31 @@
               <i class="fa-solid fa-users"></i><strong>المقاعد المتاحة</strong
               ><span id="eventSeats">50 مقعدًا</span>
             </p>
+            <div id="seatProgressWrap" class="seat-progress-wrap" aria-live="polite">
+              <div class="d-flex justify-content-between gap-2 small mb-2">
+                <span>نسبة الحجز</span>
+                <strong id="seatProgressLabel">0%</strong>
+              </div>
+              <div
+                class="progress"
+                role="progressbar"
+                aria-label="نسبة المقاعد المحجوزة"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              >
+                <div id="seatProgressBar" class="progress-bar" style="width: 0%"></div>
+              </div>
+              <small id="seatProgressHint" class="d-block mt-2"></small>
+            </div>
+            <hr />
+            <h3 id="relatedEventsTitle" class="h6 fw-bold">
+              فعاليات مرتبطة
+            </h3>
+            <div id="relatedEvents"></div>
             <hr />
             <h3 class="h6 fw-bold">فعاليات أخرى</h3>
-            <div id="relatedEvents"></div>
+            <div id="otherEvents"></div>
           </div>
         </aside>
       </div>
@@ -195,9 +262,10 @@
             <div class="booking-summary mb-4">
               <strong id="bookingEventTitle">الفعالية</strong>
               <span id="bookingDescription"
-                >أدخل بياناتك لتأكيد حجز وهمي لهذه الفعالية.</span
+                >أدخل بياناتك مرة واحدة، وسيتم تسجيلها مباشرة دون مغادرة الموقع.</span
               >
               <small id="bookingEventMeta"></small>
+              <strong id="bookingAvailability" class="text-success"></strong>
             </div>
             <form id="bookingForm" novalidate>
               <div class="mb-3">
@@ -215,7 +283,7 @@
               </div>
               <div class="mb-3">
                 <label class="form-label" for="bookingEmail"
-                  >البريد الإلكتروني الجامعي</label
+                  >البريد الإلكتروني</label
                 >
                 <input
                   id="bookingEmail"
@@ -228,9 +296,12 @@
                   أدخل بريداً إلكترونياً صالحاً.
                 </div>
               </div>
+              <p class="form-text mb-3">
+                سيتم إرسال البيانات إلى Google Forms المرتبط بالموقع دون فتح
+                النموذج أمامك.
+              </p>
               <button class="btn btn-success w-100" type="submit">
-                <i class="fa-solid fa-ticket ms-2" aria-hidden="true"></i>تأكيد
-                الحجز
+                <i class="fa-solid fa-ticket ms-2" aria-hidden="true"></i>تأكيد الحجز
               </button>
             </form>
           </div>
