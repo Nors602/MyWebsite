@@ -1507,6 +1507,10 @@ body[data-theme="dark"] .theme-toggle:focus-visible {
   border-color: #93c5fd;
   background: color-mix(in srgb, var(--primary) 35%, #1e293b);
 }
+body[data-theme="dark"] [data-share] {
+  color: #cbd5e1;
+  border-color: #64748b;
+}
 body[data-theme="dark"] .interactive-feature:hover,
 body[data-theme="dark"] .interactive-feature:focus-visible,
 body[data-theme="dark"] .interactive-feature.is-expanded,

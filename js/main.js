@@ -255,7 +255,8 @@ function initFavorites() {
     button.className = "btn btn-sm btn-outline-primary";
     button.innerHTML = '<i class="fa-regular fa-heart ms-1" aria-hidden="true"></i>المفضلة فقط';
     button.addEventListener("click", () => {
-      const showingFavorites = button.classList.toggle("active");
+      const showingFavorites = !button.classList.contains("active");
+      button.classList.toggle("active", showingFavorites);
       button.setAttribute("aria-pressed", String(showingFavorites));
       document.querySelectorAll(".event-item").forEach((item) => {
         const link = item.querySelector('a[href*="event.html?id="]');
@@ -671,7 +672,7 @@ function initEventsPage() {
     container.appendChild(card);
   });
 
-  let selectedRange = null;
+  let selectedRange = "all";
   const rangeButtons = document.querySelectorAll("[data-range-filter]");
   const updateRangeButtons = () => {
     rangeButtons.forEach((button) => {
@@ -686,7 +687,7 @@ function initEventsPage() {
       const term = search.value.trim().toLowerCase();
       const rangeStart = new Date();
       rangeStart.setHours(0, 0, 0, 0);
-      const rangeEnd = selectedRange
+      const rangeEnd = selectedRange !== "all"
         ? new Date(rangeStart.getTime() + Number(selectedRange) * 86400000)
         : null;
       let count = 0;
@@ -736,7 +737,7 @@ function initEventsPage() {
     category.value = "";
     date.value = "";
     location.value = "";
-    selectedRange = null;
+    selectedRange = "all";
     updateRangeButtons();
     applyFilters();
     showToast("تم مسح جميع الفلاتر.", "info");
@@ -749,13 +750,14 @@ function initEventsPage() {
   rangeButtons.forEach((button) => {
     button.addEventListener("click", () => {
       selectedRange =
-        selectedRange === Number(button.dataset.rangeFilter)
-          ? null
-          : Number(button.dataset.rangeFilter);
+        selectedRange === button.dataset.rangeFilter
+          ? "all"
+          : button.dataset.rangeFilter;
       updateRangeButtons();
       applyFilters();
     });
   });
+  updateRangeButtons();
   applyFilters();
 }
 
