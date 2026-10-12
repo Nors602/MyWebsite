@@ -150,11 +150,11 @@
               <div>
                 <h2 class="h4 fw-bold mb-1">موقع الفعالية</h2>
                 <p class="text-muted small mb-0">
-                  الجامعة الافتراضية السورية · دمشق ·
-                  <span>G76F+C28</span>
+                  <span id="eventLocationAddress">الجامعة الافتراضية السورية · دمشق · G76F+C28</span>
                 </p>
               </div>
               <a
+                id="eventMapLink"
                 class="btn btn-sm btn-outline-primary"
                 href="https://www.google.com/maps/search/?api=1&query=G76F%2BC28%2C%20Damascus%2C%20Syria"
                 target="_blank"
@@ -201,7 +201,7 @@
             </p>
             <p>
               <i class="fa-solid fa-signal"></i><strong>نمط الحضور</strong
-              ><span id="eventMode">عن بُعد</span>
+              >              <span id="eventMode">أونلاين</span>
             </p>
             <p>
               <i class="fa-solid fa-users"></i><strong> المقاعد المتاحة</strong
@@ -222,6 +222,7 @@
               >
                 <div id="seatProgressBar" class="progress-bar" style="width: 0%"></div>
               </div>
+              <small id="seatBookedCount" class="d-block mt-2"></small>
               <small id="seatProgressHint" class="d-block mt-2"></small>
             </div>
             <hr />
@@ -302,10 +303,6 @@
                   أدخل بريداً إلكترونياً صالحاً.
                 </div>
               </div>
-              <p class="form-text mb-3">
-                سيتم إرسال البيانات إلى Google Forms المرتبط بالموقع دون فتح
-                النموذج أمامك.
-              </p>
               <button class="btn btn-success w-100" type="submit">
                 <i class="fa-solid fa-ticket ms-2" aria-hidden="true"></i>تأكيد الحجز
               </button>

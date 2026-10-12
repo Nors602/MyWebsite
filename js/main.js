@@ -17,21 +17,27 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   if (readStorage("svu-theme") === "dark") body.dataset.theme = "dark";
+  const updateThemeToggle = (button, darkMode) => {
+    button.setAttribute(
+      "aria-label",
+      darkMode ? "تفعيل الوضع النهاري" : "تفعيل الوضع الليلي",
+    );
+    button.innerHTML = darkMode
+      ? '<i class="fa-solid fa-sun" aria-hidden="true"></i>'
+      : '<i class="fa-solid fa-moon" aria-hidden="true"></i>';
+  };
   document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    updateThemeToggle(button, body.dataset.theme === "dark");
     button.addEventListener("click", () => {
       const darkMode = body.dataset.theme === "dark";
       if (darkMode) {
         delete body.dataset.theme;
         writeStorage("svu-theme", "light");
-        button.setAttribute("aria-label", "تفعيل الوضع الليلي");
-        button.innerHTML =
-          '<i class="fa-solid fa-moon" aria-hidden="true"></i>';
       } else {
         body.dataset.theme = "dark";
         writeStorage("svu-theme", "dark");
-        button.setAttribute("aria-label", "تفعيل الوضع النهاري");
-        button.innerHTML = '<i class="fa-solid fa-sun" aria-hidden="true"></i>';
       }
+      updateThemeToggle(button, body.dataset.theme === "dark");
     });
   });
 
@@ -58,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCalendarPage();
   initFavorites();
   initContactPage();
+  initInteractiveFeatures();
   initEventDetails();
 });
 
@@ -86,6 +93,26 @@ function setButtonLoading(button, isLoading, label, icon = "fa-filter") {
   button.innerHTML = isLoading
     ? '<span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>جارٍ المعالجة'
     : `<i class="fa-solid ${icon} ms-2" aria-hidden="true"></i>${label}`;
+}
+
+function initInteractiveFeatures() {
+  document
+    .querySelectorAll(".interactive-feature, .interactive-step")
+    .forEach((feature) => {
+    if (feature.dataset.interactiveReady) return;
+    feature.dataset.interactiveReady = "true";
+    const toggleFeature = () => {
+      const expanded = feature.classList.toggle("is-expanded");
+      feature.setAttribute("aria-expanded", String(expanded));
+    };
+    feature.addEventListener("click", toggleFeature);
+    feature.addEventListener("keydown", (keyboardEvent) => {
+      if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+        keyboardEvent.preventDefault();
+        toggleFeature();
+      }
+    });
+    });
 }
 
 const FAVORITES_KEY = "svu-favorite-events";
@@ -263,6 +290,7 @@ const eventCatalog = {
     date: "10 نوفمبر 2026",
     time: "10:00 صباحًا – 4:00 مساءً",
     location: "الجامعة الافتراضية السورية",
+    locationType: "campus",
     image: "img/المؤتمر السنوي للبرمجة.jpg",
     description:
       "يلتقي الطلاب والمهتمون بالتقنية في يوم معرفي يستعرض اتجاهات هندسة البرمجيات، من تطوير أنظمة Backend إلى تطبيقات الذكاء الاصطناعي، عبر جلسات حوارية وتجارب عملية تفتح آفاقًا جديدة.",
@@ -280,7 +308,9 @@ const eventCatalog = {
     title: "معرض الكتاب الجامعي",
     date: "20 نوفمبر 2026",
     time: "10:00 صباحًا – 5:00 مساءً يوميًا",
-    location: "الجامعة الافتراضية السورية",
+    location: "المركز الثقافي العربي، دمشق، سوريا",
+    locationType: "external",
+    mapQuery: "F7MC+2R5 دمشق، سوريا",
     image: "img/نادي الكتاب.jpg",
     description:
       "معرض ثقافي مفتوح يضم إصدارات أكاديمية وروايات مختارة، ويمنح الطلاب فرصة اكتشاف مصادر جديدة للتعلم وتبادل التوصيات في أجواء جامعية ملهمة.",
@@ -299,6 +329,7 @@ const eventCatalog = {
     date: "25 نوفمبر 2026",
     time: "6:00 مساءً – 8:30 مساءً",
     location: "أونلاين",
+    locationType: "online",
     image: "img/ورشة عمل برمجية.jpg",
     description:
       "ورشة عملية للمطورين والطلاب الراغبين في تطوير أنظمة حديثة باستخدام C# و.NET. تتناول معمارية الطبقات الثلاث، SQL Server، وبناء تطبيقات قابلة للتوسع من خلال أمثلة تطبيقية.",
@@ -317,6 +348,7 @@ const eventCatalog = {
     date: "28 ديسمبر 2026",
     time: "11:00 صباحًا – 1:00 ظهرًا",
     location: "الجامعة الافتراضية السورية",
+    locationType: "campus",
     image: "img/نادي الكتاب.jpg",
     description:
       "مساحة حوارية نقرأ فيها روايات ومؤلفات مختارة، ثم نتبادل الأفكار والتجارب التي توسّع المدارك وتدعم عادة التعلم المستمر.",
@@ -335,6 +367,7 @@ const eventCatalog = {
     date: "1 ديسمبر 2026",
     time: "7:00 مساءً – 10:00 مساءً",
     location: "أونلاين",
+    locationType: "online",
     image: "img/شطرنج.jpg",
     description:
       "تجربة تنافسية تجمع الطلاب في جولات شطرنج تنمّي التركيز والتخطيط والتفكير المنطقي، ضمن أجواء حماسية ومنظمة.",
@@ -353,6 +386,7 @@ const eventCatalog = {
     date: "15 نوفمبر 2026",
     time: "11:00 صباحًا – 3:00 مساءً",
     location: "الجامعة الافتراضية السورية",
+    locationType: "campus",
     image: "img/يوم العائلة.jpg",
     description:
       "يوم اجتماعي مفتوح يجمع الطلاب وأسرهم وأعضاء الهيئة التدريسية في أنشطة خفيفة ومسابقات ولقاءات تعزز روح الانتماء إلى المجتمع الجامعي.",
@@ -370,7 +404,9 @@ const eventCatalog = {
     title: "زهرة أكتوبر",
     date: "29 أكتوبر 2026",
     time: "12:00 ظهرًا – 2:00 ظهرًا",
-    location: "الجامعة الافتراضية السورية",
+    location: "حديقة تشرين، دمشق، سوريا",
+    locationType: "external",
+    mapQuery: "G75C+PPM دمشق، سوريا",
     image: "img/فعالية زهرة اكتوبر.jpg",
     description:
       "لقاء خريفي بسيط يفتح مساحة للتعارف والراحة ومشاركة لحظات مبهجة مع مجتمع الجامعة، بعيدًا عن ضغط الدراسة وروتينها.",
@@ -388,8 +424,10 @@ const eventCatalog = {
     title: "يوم المهنة والتوظيف",
     date: "5 يناير 2027",
     time: "10:00 صباحًا – 3:00 مساءً",
-    location: "الجامعة الافتراضية السورية",
-    image: "img/طلاب يبرمجون.jpg",
+    location: "الداماروز، دمشق، سوريا",
+    locationType: "external",
+    mapQuery: "G75G+RQQ دمشق، سوريا",
+    image: "img/يوم المهنة.jpg",
     description:
       "يوم مهني يساعد الطلاب والخريجين على الانتقال بثقة إلى سوق العمل من خلال مراجعة السيرة الذاتية، التدريب على المقابلات، واستكشاف فرص التدريب والعمل الحر.",
     duration: "خمس ساعات",
@@ -406,8 +444,10 @@ const eventCatalog = {
     title: "مختبر التصوير وصناعة المحتوى",
     date: "12 يناير 2027",
     time: "5:00 مساءً – 7:00 مساءً",
-    location: "أونلاين",
-    image: "img/فعالية زهرة اكتوبر.jpg",
+    location: "مساحة كووركر المشتركة، دمشق، سوريا",
+    locationType: "external",
+    mapQuery: "F7XG+243 دمشق، سوريا",
+    image: "img/مختبر التصوير.jpg",
     description:
       "ورشة إبداعية للمبتدئين وصنّاع المحتوى تتناول اختيار الفكرة، بناء القصة، أساسيات التصوير، وتقديم صورة وفيديو أكثر تأثيرًا.",
     duration: "ساعتان",
@@ -425,6 +465,7 @@ const eventCatalog = {
     date: "18 يناير 2027",
     time: "6:00 مساءً – 8:00 مساءً",
     location: "أونلاين",
+    locationType: "online",
     image: "img/يوم العائلة.jpg",
     description:
       "جلسة عملية تقدم أدوات قابلة للتطبيق لتنظيم وقت الدراسة، تخفيف ضغط الامتحانات، وبناء روتين متوازن يدعم التركيز والراحة.",
@@ -443,7 +484,8 @@ const eventCatalog = {
     date: "25 يناير 2027",
     time: "11:00 صباحًا – 2:00 مساءً",
     location: "الجامعة الافتراضية السورية",
-    image: "img/المؤتمر السنوي للبرمجة.jpg",
+    locationType: "campus",
+    image: "img/معرض مشاريع الطلاب.jpg",
     description:
       "منصة لعرض مشاريع الطلاب وأفكارهم البحثية والابتكارية، وفتح حوار مع الأكاديميين والمهتمين للحصول على ملاحظات تساعد على تطويرها.",
     duration: "ثلاث ساعات",
@@ -461,7 +503,8 @@ const eventCatalog = {
     date: "2 فبراير 2027",
     time: "6:00 مساءً – 8:00 مساءً",
     location: "أونلاين",
-    image: "img/نادي الكتاب.jpg",
+    locationType: "online",
+    image: "img/المحادثة الانجليزية.jpg",
     description:
       "لقاء تفاعلي لممارسة المحادثة الإنكليزية وتطوير الإلقاء والتواصل بثقة، من خلال موضوعات يومية وأكاديمية تناسب مستويات مختلفة.",
     duration: "ساعتان",
@@ -478,8 +521,10 @@ const eventCatalog = {
     title: "مبادرة أثر التطوعية",
     date: "10 فبراير 2027",
     time: "10:00 صباحًا – 1:00 ظهرًا",
-    location: "الجامعة الافتراضية السورية",
-    image: "img/طلاب يبرمجون.jpg",
+    location: "حاضنة دمشق التنموية، F8W4+PP5، دمشق، سوريا",
+    locationType: "external",
+    mapQuery: "F8W4+PP5 دمشق، سوريا",
+    image: "img/مبادرة أثر.jpg",
     description:
       "مبادرة طلابية تحول روح التطوع إلى خطوات عملية لخدمة المجتمع، وتتيح للمشاركين توظيف مهاراتهم ضمن فرق تصنع أثرًا ملموسًا ومستدامًا.",
     duration: "ثلاث ساعات",
@@ -541,7 +586,7 @@ function getGoogleCalendarUrl(event) {
     text: event.title,
     dates: `${toCalendarValue(parsed.start)}/${toCalendarValue(parsed.end)}`,
     details: event.description,
-    location: event.location === "أونلاين" ? "أونلاين" : "الجامعة الافتراضية السورية، دمشق، G76F+C28",
+    location: event.location,
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
@@ -616,7 +661,7 @@ function initEventsPage() {
   const container = document.getElementById("eventsContainer");
   newEvents.forEach((eventId) => {
     const item = eventCatalog[eventId];
-    const locationType = item.location === "أونلاين" ? "online" : "campus";
+    const locationType = item.locationType;
     const card = document.createElement("div");
     card.className = "col-md-6 col-lg-3 event-item";
     card.dataset.category = eventId;
@@ -772,17 +817,31 @@ function initEventDetails() {
   setText("#eventTitle", event.title);
   setText("#eventDescription", event.description);
   setText("#eventDuration", event.duration);
-  setText("#eventMode", event.mode);
+  setText(
+    "#eventMode",
+    event.locationType === "online"
+      ? "أونلاين"
+      : event.locationType === "external"
+        ? "خارج الجامعة"
+        : "داخل الجامعة",
+  );
   setText("#eventSeats", event.seats);
   const meta = document.getElementById("eventMeta");
   if (meta)
     meta.innerHTML = `<i class="fa-regular fa-calendar"></i> ${event.date} <i class="fa-regular fa-clock"></i> ${event.time} <i class="fa-solid fa-location-dot"></i> ${event.location}`;
   const mapSection = document.getElementById("eventMapSection");
   const mapFrame = document.getElementById("eventMap");
-  if (mapSection && mapFrame && event.location !== "أونلاين") {
+  const mapLink = document.getElementById("eventMapLink");
+  const locationAddress = document.getElementById("eventLocationAddress");
+  if (mapSection && mapFrame && event.locationType !== "online") {
     mapSection.classList.remove("d-none");
-    mapFrame.src =
-      "https://www.google.com/maps?q=G76F%2BC28%2C%20Damascus%2C%20Syria&output=embed";
+    const mapQuery = event.mapQuery || "G76F+C28 دمشق، سوريا";
+    const encodedQuery = encodeURIComponent(mapQuery);
+    mapFrame.src = `https://www.google.com/maps?q=${encodedQuery}&output=embed`;
+    if (locationAddress) locationAddress.textContent = event.location;
+    if (mapLink) {
+      mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`;
+    }
   }
   const image = document.getElementById("eventImage");
   if (image) {
@@ -795,19 +854,6 @@ function initEventDetails() {
         `<div class="col-sm-4"><div class="feature-box interactive-feature" tabindex="0" role="button" aria-expanded="false"><i class="fa-solid ${icon}"></i><strong>${featureTitle}</strong><span>${description}</span></div></div>`,
     )
     .join("");
-  document.querySelectorAll(".interactive-feature").forEach((feature) => {
-    const toggleFeature = () => {
-      const expanded = feature.classList.toggle("is-expanded");
-      feature.setAttribute("aria-expanded", String(expanded));
-    };
-    feature.addEventListener("click", toggleFeature);
-    feature.addEventListener("keydown", (keyboardEvent) => {
-      if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
-        keyboardEvent.preventDefault();
-        toggleFeature();
-      }
-    });
-  });
   const otherEvents = Object.entries(eventCatalog).filter(
     ([eventId, item]) => eventId !== id && item.category !== event.category,
   );
@@ -874,10 +920,26 @@ function initEventDetails() {
         window.localStorage.getItem(bookingStorageKey) || "0",
         10,
       );
-      return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      return Number.isFinite(saved)
+        ? Math.min(Math.max(saved, 0), numericSeats)
+        : 0;
     } catch {
       return 0;
     }
+  };
+  const recordBooking = () => {
+    if (!Number.isFinite(numericSeats)) return true;
+    const currentBookings = readBookings();
+    if (currentBookings >= numericSeats) return false;
+    try {
+      window.localStorage.setItem(
+        bookingStorageKey,
+        String(currentBookings + 1),
+      );
+    } catch {
+      // يبقى الحجز مرسلًا حتى عند تعطيل التخزين المحلي.
+    }
+    return true;
   };
   const updateAvailability = () => {
     if (!Number.isFinite(numericSeats)) {
@@ -915,6 +977,7 @@ function initEventDetails() {
       );
       progress.setAttribute("aria-valuenow", String(percentage));
       setText("#seatProgressLabel", `${percentage}%`);
+      setText("#seatBookedCount", `عدد الحاجزين: ${booked}`);
       setText(
         "#seatProgressHint",
         remaining === 0
@@ -929,6 +992,9 @@ function initEventDetails() {
     }
   };
   updateAvailability();
+  window.addEventListener("storage", (storageEvent) => {
+    if (storageEvent.key === bookingStorageKey) updateAvailability();
+  });
   modalElement?.addEventListener("shown.bs.modal", () =>
     document.getElementById("bookingName")?.focus(),
   );
@@ -947,12 +1013,19 @@ function initEventDetails() {
     const button = form.querySelector('button[type="submit"]');
     setButtonLoading(button, true, "تأكيد الحجز", "fa-ticket");
     window.setTimeout(() => {
+      if (Number.isFinite(numericSeats) && readBookings() >= numericSeats) {
+        setButtonLoading(button, false, "تأكيد الحجز", "fa-ticket");
+        updateAvailability();
+        showToast("عذرًا، اكتملت المقاعد المتاحة.", "danger");
+        return;
+      }
       const sentToGoogleForm = submitToGoogleForm(
         event,
         document.getElementById("bookingName").value.trim(),
         document.getElementById("bookingEmail").value.trim(),
       );
       if (sentToGoogleForm) {
+        recordBooking();
         form.reset();
         form.classList.remove("was-validated");
         setButtonLoading(button, false, "تأكيد الحجز", "fa-ticket");
@@ -969,14 +1042,7 @@ function initEventDetails() {
           showToast("عذرًا، اكتملت المقاعد المتاحة.", "danger");
           return;
         }
-        try {
-          window.localStorage.setItem(
-            bookingStorageKey,
-            String(currentBookings + 1),
-          );
-        } catch {
-          // يبقى الحجز تجريبيًا حتى عند تعطيل التخزين المحلي.
-        }
+        recordBooking();
       }
       form.reset();
       form.classList.remove("was-validated");
