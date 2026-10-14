@@ -804,6 +804,9 @@ body[data-theme="dark"] .favorite-toggle {
   .container {
     padding-inline: 1rem;
   }
+  .container > .row {
+    margin-inline: 0;
+  }
   .category-card {
     min-height: 0;
     align-items: flex-start;
@@ -1390,7 +1393,7 @@ body[data-theme="dark"] .about-step {
     text-align: center;
   }
 }
-@media (max-width: 420px) {
+@media (max-width: 360px) {
   .team-grid {
     grid-template-columns: 1fr;
   }
