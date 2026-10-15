@@ -258,29 +258,11 @@ function initFavorites() {
       const showingFavorites = !button.classList.contains("active");
       button.classList.toggle("active", showingFavorites);
       button.setAttribute("aria-pressed", String(showingFavorites));
-      document.querySelectorAll(".event-item").forEach((item) => {
-        const link = item.querySelector('a[href*="event.html?id="]');
-        const eventId = link?.href.split("id=")[1];
-        if (showingFavorites && !getFavoriteIds().includes(eventId)) {
-          item.classList.add("d-none");
-        } else if (!item.dataset.filteredOut || item.dataset.filteredOut === "false") {
-          item.classList.remove("d-none");
-        }
-      });
+      document.dispatchEvent(new CustomEvent("favoriteschanged"));
       if (showingFavorites && !getFavoriteIds().length) showToast("لم تحفظ أي فعالية في المفضلة بعد.", "info");
     });
     resultsHeading.appendChild(button);
   }
-  document.addEventListener("favoriteschanged", () => {
-    const favoritesOnly = document.getElementById("favoritesOnlyBtn");
-    if (!favoritesOnly?.classList.contains("active")) return;
-    document.querySelectorAll(".event-item").forEach((item) => {
-      const eventId = item
-        .querySelector('a[href*="event.html?id="]')
-        ?.href.split("id=")[1];
-      item.classList.toggle("d-none", !getFavoriteIds().includes(eventId));
-    });
-  });
   updateFavoriteButtons();
 }
 
@@ -757,6 +739,7 @@ function initEventsPage() {
       applyFilters();
     });
   });
+  document.addEventListener("favoriteschanged", applyFilters);
   updateRangeButtons();
   applyFilters();
 }
@@ -777,7 +760,10 @@ function initContactPage() {
       form.reset();
       form.classList.remove("was-validated");
       setButtonLoading(button, false, "إرسال الرسالة", "fa-paper-plane");
-      showToast("تم إرسال رسالتك بنجاح. شكرًا لتواصلك معنا.");
+      showToast(
+        "تم تجهيز رسالتك تجريبيًا، لكن لم تُرسل لأن هذا النموذج لا يتصل بخدمة إرسال.",
+        "info",
+      );
     }, 550);
   });
 }
@@ -809,7 +795,31 @@ function initEventDetails() {
     document.title = "اختيار الفعالية | دليل فعاليات SVU";
     return;
   }
-  const event = eventCatalog[id] || eventCatalog.tech;
+  const event = eventCatalog[id];
+  if (!event) {
+    const detailsLayout = document.getElementById("eventDetailsLayout");
+    const landing = document.getElementById("eventLanding");
+    const landingEvents = document.getElementById("landingEvents");
+    if (detailsLayout && landing && landingEvents) {
+      detailsLayout.classList.add("d-none");
+      landing.classList.remove("d-none");
+      const featuredIds = [
+        "annual-conference",
+        "book-exhibition",
+        "career",
+        "research",
+      ];
+      landingEvents.innerHTML = featuredIds
+        .map((eventId) => {
+          const item = eventCatalog[eventId];
+          return `<div class="col-md-6 col-lg-3"><article class="landing-event-card"><img src="${item.image}" alt="${item.title}" loading="lazy"><div class="p-3"><span class="event-badge">${item.category}</span><h2 class="h5 fw-bold mt-3">${item.title}</h2><p class="event-meta mb-3"><i class="fa-regular fa-calendar"></i> ${item.date}<i class="fa-regular fa-clock"></i> ${item.time}</p><a class="event-link" href="event.html?id=${eventId}">عرض التفاصيل <i class="fa-solid fa-arrow-left me-2"></i></a></div></article></div>`;
+        })
+        .join("");
+    }
+    document.title = "الفعالية غير موجودة | دليل فعاليات SVU";
+    showToast("لم نعثر على الفعالية المطلوبة.", "danger");
+    return;
+  }
   const setText = (selector, value) => {
     const element = document.querySelector(selector);
     if (element) element.textContent = value;
